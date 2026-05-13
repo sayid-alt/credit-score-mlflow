@@ -9,28 +9,32 @@ import warnings
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
     warnings.filterwarnings("ignore")
     np.random.seed(42)
+    mlflow.set_tracking_uri("file:./mlruns")
+    print(f"Tracking URI: {mlflow.get_tracking_uri()}")
 
+    # read data
     file_path = sys.argv[3] if len(sys.argv) > 3 else os.path.join(os.path.dirname(os.path.abspath(__file__)), "train_pca.csv")
     data = pd.read_csv(file_path)
 
+    # split the data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(
         data.drop("Credit_Score", axis=1),
         data["Credit_Score"],
         random_state=42,
         test_size=0.2
     )
-
     input_example = X_train[0:5]
 
+    # set hyperparameters from command line arguments or use default values
     n_estimators = int(sys.argv[1]) if len(sys.argv) > 1 else 505
     max_depth = int(sys.argv[2]) if len(sys.argv) > 2 else 37
 
+    os.environ.pop("MLFLOW_RUN_ID", None)
     with mlflow.start_run():
-
         model = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, random_state=42)
         model.fit(X_train, y_train)
 
