@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+env:
+  CSV_URL: "MLproject/train_pca.csv"
+
+jobs:
+  build:
+    runs-on:
+      - ubuntu-latest
+
+    steps:
+      # Checks-out repository under $GITHUB_WORKSHPACE
+      - uses: actions/checkout@v4
+
+      # setup python 3.12.7 version
+      - name: set up python 3.12.7
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12.7"
+
+      - name: check env
+        run: |
+          echo $CSV_URL
+
+      - name: install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mlflow
+
+      - name: run mlflow project
+        run: |
+          mlflow run MLproject --env-manager=local
+
+      - name: setup github lfs
+        run: |
+          git config --global user.name ${{ secrets.username }}
+          git config --global user.email ${{ secrets.email }}
+          git lfs install
+          git lfs track "mlruns/**"
+          git add .gitattributes
+          git commit -m "Track large files within mlruns with git LFS" | true
+          git push origin main
+
+      - name: save ML run to repo
+        run: |
+          git config --global user.name ${{ secrets.username }}
+          git config --global user.email ${{ secrets.email }}
+          git add mlruns/
+          git commit -m "Save mlruns from CI run"
+          git push origin main
