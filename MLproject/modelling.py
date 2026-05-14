@@ -13,7 +13,7 @@ from sklearn.model_selection import train_test_split
 if __name__ == "__main__":
     warnings.filterwarnings("ignore")
     np.random.seed(42)
-    mlflow.set_tracking_uri("file:./mlruns")
+    # mlflow.set_tracking_uri("file:./mlruns") --> Already set in the GitHub Actions workflow file
     print(f"Tracking URI: {mlflow.get_tracking_uri()}")
 
     # read data
@@ -27,7 +27,7 @@ if __name__ == "__main__":
         random_state=42,
         test_size=0.2
     )
-    input_example = X_train[0:5]
+    input_example = X_train.iloc[0:5]
 
     # set hyperparameters from command line arguments or use default values
     n_estimators = int(sys.argv[1]) if len(sys.argv) > 1 else 505
