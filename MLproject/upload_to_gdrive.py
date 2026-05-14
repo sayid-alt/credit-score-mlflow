@@ -59,7 +59,7 @@ def upload_directory(local_dir_path, parent_drive_id):
 
 # 4. Baca semua subfolder (run_id) di "./mlruns/0"
 #    Kemudian buat folder sesuai run_id di Shared Drive (tanpa folder "mlruns" agar tidad redundant).
-local_mlruns_0 = "./mlruns/0"
+local_mlruns_0 = "../mlruns/0"
 
 for run_id in os.listdir(local_mlruns_0):
     run_id_local_path = os.path.join(local_mlruns_0, run_id)
