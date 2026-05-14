@@ -9,7 +9,6 @@ import warnings
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 
-
 if __name__ == "__main__":
     warnings.filterwarnings("ignore")
     np.random.seed(42)
